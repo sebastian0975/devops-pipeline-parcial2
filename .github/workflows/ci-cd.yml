@@ -28,9 +28,9 @@ jobs:
           pip install -r requirements.txt
           pip install pytest-cov
 
-      - name: Ejecutar pruebas
+      - name: Ejecutar pruebas con cobertura
         run: |
-          pytest --cov=app
+          pytest --cov=app --cov-report=term
 
   docker:
     needs: test
