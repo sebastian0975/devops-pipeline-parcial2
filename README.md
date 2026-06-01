@@ -1,36 +1,72 @@
-# DevOps Pipeline Parcial 2
+# DevOps Pipeline - Evaluación 2
 
-## Descripción
-Microservicio Flask con CI/CD usando GitHub Actions, Docker y pruebas automatizadas.
+## Descripción del proyecto
 
-## Tecnologías
-- Python
+Este proyecto consiste en un microservicio desarrollado con Flask como parte de la asignatura de Ingeniería DevOps.
+
+El objetivo es implementar un pipeline CI/CD que automatice el proceso de integración, pruebas, construcción con Docker y despliegue en un entorno simulado.
+
+## Tecnologías utilizadas
+
+- Python 3.11
 - Flask
-- Pytest
 - Docker
 - Docker Compose
+- Pytest
 - GitHub Actions
+- Flake8
+- pytest-cov
+- Dependabot
 
-## Cómo ejecutar el proyecto
+## Estructura del proyecto
 
-### Docker Compose
-docker-compose up --build
+- app/ → código del microservicio
+- tests/ → pruebas automatizadas
+- .github/workflows/ → pipeline CI/CD
+- Dockerfile → imagen del proyecto
+- docker-compose.yml → entorno simulado
 
-### Ejecución manual
-python app/app.py
+## Funcionalidad
 
-La aplicación corre en:
-http://localhost:5000
+El microservicio responde en la ruta:
 
-## Pruebas
-pytest
+/
 
-## CI/CD Pipeline
-El pipeline automatiza:
+Respuesta esperada:
+
+```json
+{"mensaje": "Microservicio DevOps funcionando"}
+```
+
+## Pipeline CI/CD
+
+El pipeline se ejecuta automáticamente en GitHub Actions cuando hay push o pull request a main o develop.
+
+Incluye:
 - Instalación de dependencias
-- Ejecución de pruebas con pytest
+- Ejecución de tests con pytest
+- Cobertura de código con pytest-cov
+- Revisión de calidad con flake8
 - Construcción de imagen Docker
-- Integración continua con GitHub Actions
+- Ejecución del contenedor
+
+## Ejecución con Docker
+
+docker build -t microservicio-devops .
+docker run -p 5000:5000 microservicio-devops
+
+## Ejecución de pruebas
+
+pytest --cov=app
+
+## Seguridad
+
+Se utiliza Dependabot para detectar vulnerabilidades en dependencias.
+
+## Aprendizaje
+
+Se aprendió a usar pipelines CI/CD, pruebas automáticas y Docker para simular despliegues.
 
 ## Autor
-Proyecto de evaluación DevOps
+
+Sebastian Gonzalez Tapia
