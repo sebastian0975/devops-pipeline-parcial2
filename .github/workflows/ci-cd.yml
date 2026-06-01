@@ -26,11 +26,15 @@ jobs:
       - name: Instalar dependencias
         run: |
           pip install -r requirements.txt
-          pip install pytest-cov
+          pip install pytest-cov flake8
 
       - name: Ejecutar pruebas con cobertura
         run: |
           pytest --cov=app --cov-report=term
+
+      - name: Analizar calidad de código (SAST - flake8)
+        run: |
+          flake8 app tests
 
   docker:
     needs: test
