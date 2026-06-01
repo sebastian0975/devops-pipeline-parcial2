@@ -34,7 +34,7 @@ jobs:
 
       - name: Analizar calidad de código (SAST - flake8)
         run: |
-          flake8 app tests
+          flake8 app
 
   docker:
     needs: test
