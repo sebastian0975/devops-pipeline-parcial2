@@ -3,12 +3,10 @@ from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 
 app = Flask(__name__)
 
-
 REQUEST_COUNT = Counter(
     "peticiones_totales",
     "Cantidad total de peticiones al microservicio"
 )
-
 
 ERROR_COUNT = Counter(
     "errores_totales",
