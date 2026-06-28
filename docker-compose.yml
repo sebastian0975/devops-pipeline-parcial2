@@ -1,21 +1,40 @@
-version: '3.9'
+version: "3.9"
 
 services:
+
   microservicio:
     build: .
     container_name: microservicio-devops
     ports:
       - "5000:5000"
-    environment:
-      - APP_ENV=development
     restart: unless-stopped
     networks:
-      - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - devops-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - microservicio
+    networks:
+      - devops-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - devops-network
 
 networks:
-  backend:
+  devops-network:
+    driver: bridge

@@ -11,41 +11,53 @@ on:
       - main
 
 jobs:
+
   test:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Instalar Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Instalar dependencias
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest-cov flake8
+          pip install pytest pytest-cov flake8 bandit
 
-      - name: Ejecutar pruebas con cobertura
+      - name: Ejecutar pruebas
         run: |
           pytest --cov=app --cov-report=term
 
-      - name: Analizar calidad de código (SAST - flake8)
+      - name: Revisar calidad del código
         run: |
-          flake8 app --exit-zero
+          flake8 app
+
+      - name: Escaneo de seguridad con Bandit
+        run: |
+          bandit -r app
 
   docker:
+
     needs: test
+
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Descargar código
         uses: actions/checkout@v4
 
       - name: Construir imagen Docker
-        run: docker build -t microservicio-devops .
+        run: |
+          docker build -t microservicio-devops .
 
       - name: Ejecutar contenedor
-        run: docker run -d -p 5000:5000 microservicio-devops
+        run: |
+          docker run -d -p 5000:5000 microservicio-devops
