@@ -13,7 +13,6 @@ ERROR_COUNT = Counter(
     "Cantidad total de errores del microservicio"
 )
 
-
 @app.route("/")
 def home():
     REQUEST_COUNT.inc()
@@ -22,12 +21,10 @@ def home():
         "estado": "OK"
     })
 
-
 @app.route("/error")
 def error():
     ERROR_COUNT.inc()
     return "Error simulado", 500
-
 
 @app.route("/metrics")
 def metrics():
@@ -35,7 +32,5 @@ def metrics():
         "Content-Type": CONTENT_TYPE_LATEST
     }
 
-
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-    
