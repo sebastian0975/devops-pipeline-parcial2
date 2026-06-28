@@ -19,9 +19,11 @@ ERROR_COUNT = Counter(
     "Cantidad total de errores del microservicio"
 )
 
+
 # =========================
 # ENDPOINT PRINCIPAL
 # =========================
+
 @app.route("/")
 def home():
     REQUEST_COUNT.inc()
@@ -30,25 +32,31 @@ def home():
         "estado": "OK"
     })
 
+
 # =========================
 # ENDPOINT DE ERROR (NUEVO)
 # =========================
+
 @app.route("/error")
 def error():
     ERROR_COUNT.inc()
     return "Error simulado", 500
 
+
 # =========================
 # MÉTRICAS PROMETHEUS
 # =========================
+
 @app.route("/metrics")
 def metrics():
     return generate_latest(), 200, {
         "Content-Type": CONTENT_TYPE_LATEST
     }
 
+
 # =========================
 # MAIN
 # =========================
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
