@@ -1,73 +1,181 @@
-# DevOps Pipeline - Evaluación Parcial 2
+# DevOps Pipeline - Evaluación Parcial 3
 
-## Descripción del proyecto
+## Descripción
 
-Este proyecto consiste en un microservicio desarrollado con Flask en el contexto de la asignatura de Ingeniería DevOps.  
-El objetivo es implementar un pipeline CI/CD que automatice el proceso de integración, pruebas, construcción con Docker y despliegue en un entorno simulado mediante Docker Compose.
+Este proyecto corresponde a la Evaluación Parcial 3 de la asignatura de Ingeniería DevOps.
 
----
+Consiste en la extensión del pipeline DevOps desarrollado previamente para incorporar herramientas de observabilidad mediante Prometheus y Grafana, permitiendo monitorear el comportamiento del microservicio y visualizar métricas de funcionamiento en un entorno simulado.
 
-## Tecnologías utilizadas
-
-- Python 3.11
-- Flask
-- Docker
-- Docker Compose
-- Pytest
-- GitHub Actions
-- Flake8
-- pytest-cov
-- Dependabot
+Además, el proyecto incluye un despliegue del microservicio utilizando Docker, Docker Compose y Kubernetes.
 
 ---
 
-## Estructura del proyecto
+# Tecnologías utilizadas
 
-- app/ → Código del microservicio Flask
-- tests/ → Pruebas automatizadas
-- .github/workflows/ → Pipeline CI/CD (GitHub Actions)
-- Dockerfile → Imagen del microservicio
-- docker-compose.yml → Orquestación del entorno simulado
+* Python 3.11
+* Flask
+* Docker
+* Docker Compose
+* Kubernetes
+* Prometheus
+* Grafana
+* GitHub Actions
+* Pytest
+* pytest-cov
+* Flake8
+* Bandit
+* Dependabot
 
 ---
 
-## Funcionalidad
+# Estructura del proyecto
 
-El microservicio expone la ruta:
-
-GET /
-
-Respuesta esperada:
-
-```json
-{"mensaje": "Microservicio DevOps funcionando"}
+```
+.
+├── .github/
+│   └── workflows/
+├── app/
+├── docs/
+│   └── evidencias/
+├── grafana/
+├── kubernetes/
+├── prometheus/
+├── tests/
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## Ejecución del proyecto
+# Funcionalidad del microservicio
 
-### 1. Con Docker Compose (recomendado)
+El microservicio fue desarrollado utilizando Flask.
+
+Expone las siguientes rutas:
+
+## GET /
+
+Devuelve el estado del microservicio.
+
+Respuesta:
+
+```json
+{
+  "mensaje": "Microservicio DevOps funcionando",
+  "estado": "OK"
+}
+```
+
+## GET /error
+
+Genera un error controlado para registrar una métrica de errores.
+
+## GET /metrics
+
+Expone las métricas del microservicio en formato Prometheus.
+
+---
+
+# Observabilidad
+
+Se implementó Prometheus para recolectar las métricas generadas por el microservicio.
+
+Las métricas son obtenidas desde:
+
+```
+/metrics
+```
+
+Grafana fue configurado como herramienta de visualización utilizando Prometheus como fuente de datos.
+
+Se creó un dashboard personalizado que muestra:
+
+* Peticiones Totales
+* Errores Totales
+* CPU del proceso
+* Memoria utilizada
+
+---
+
+# Kubernetes
+
+El proyecto incluye manifiestos para desplegar el microservicio en un clúster Kubernetes.
+
+Se implementan los siguientes recursos:
+
+* Namespace
+* Deployment
+* Service (NodePort)
+
+El despliegue fue validado verificando el estado del Pod y del Deployment.
+
+---
+
+# Pipeline CI/CD
+
+El proyecto incorpora un pipeline utilizando GitHub Actions.
+
+El flujo realiza las siguientes tareas:
+
+* Instalación de dependencias
+* Ejecución de pruebas automatizadas
+* Cobertura de código con pytest-cov
+* Análisis de calidad con Flake8
+* Escaneo de seguridad mediante Bandit
+* Construcción de la imagen Docker
+* Ejecución del contenedor
+
+---
+
+# Evidencias
+
+Las evidencias del funcionamiento del proyecto se encuentran en:
+
+```
+docs/evidencias
+```
+
+Incluyen capturas de:
+
+* Dashboard de Grafana
+* Estado de Prometheus
+* Contenedores Docker
+* Recursos de Kubernetes
+* Pipeline de GitHub Actions
+
+---
+
+# Ejecución del proyecto
+
+## Docker Compose
 
 ```bash
 docker compose up --build
 ```
 
-El servicio quedará disponible en:
+Microservicio:
+
+```
 http://localhost:5000
+```
 
----
+Prometheus:
 
-### 2. Con Docker directamente
+```
+http://localhost:9090
+```
 
-```bash
-docker build -t microservicio-devops .
-docker run -p 5000:5000 microservicio-devops
+Grafana:
+
+```
+http://localhost:3000
 ```
 
 ---
 
-## Ejecución de pruebas
+# Ejecución de pruebas
 
 ```bash
 pytest --cov=app
@@ -75,54 +183,6 @@ pytest --cov=app
 
 ---
 
-## Pipeline CI/CD (GitHub Actions)
-
-El pipeline se ejecuta automáticamente en cada push o pull request a las ramas main o develop.
-
-Incluye las siguientes etapas:
-
-1. Instalación de dependencias
-2. Ejecución de pruebas automatizadas (pytest)
-3. Análisis de cobertura de código (pytest-cov)
-4. Análisis de calidad de código (flake8)
-5. Análisis de dependencias (Dependabot - SCA)
-6. Construcción de imagen Docker
-7. Ejecución del contenedor en entorno simulado
-
-Esto permite asegurar calidad, trazabilidad y funcionamiento del sistema antes del despliegue.
-
----
-
-## Docker Compose (orquestación)
-
-El archivo docker-compose.yml permite levantar el sistema completo en un entorno simulado.
-
-Incluye:
-- Servicio del microservicio Flask
-- Exposición del puerto 5000
-- Variables de entorno (si aplica)
-- Red interna entre contenedores
-- Healthcheck para validar estado del servicio
-- Reinicio automático en caso de fallos
-
----
-
-## Seguridad y dependencias (SCA)
-
-Se utiliza Dependabot para el análisis automático de dependencias del proyecto.
-
-Esto permite detectar vulnerabilidades en librerías utilizadas y mantener el proyecto actualizado y seguro.
-
----
-
-## Aprendizaje
-
-Se logró implementar un pipeline CI/CD funcional utilizando GitHub Actions, integrando pruebas automatizadas, análisis de calidad de código y construcción de imágenes Docker.
-
-También se comprendió la importancia de la orquestación de contenedores con Docker Compose para simular entornos reales de despliegue.
-
----
-
-## Autor
+# Autor
 
 Sebastián González Tapia
