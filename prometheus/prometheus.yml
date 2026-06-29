@@ -3,6 +3,7 @@ global:
 
 scrape_configs:
   - job_name: "microservicio"
+
     static_configs:
       - targets:
-          - microservicio-devops:5000
+          - microservicio:5000

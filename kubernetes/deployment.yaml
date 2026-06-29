@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: microservicio-devops
+  namespace: devops
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: microservicio
+
+  template:
+    metadata:
+      labels:
+        app: microservicio
+
+    spec:
+      containers:
+        - name: microservicio
+
+          image: microservicio-devops:latest
+
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 5000
