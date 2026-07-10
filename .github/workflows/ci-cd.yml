@@ -5,7 +5,8 @@ on:
     branches:
       - main
       - develop
-      - feature/observabilidad
+      - feature/**
+      - hotfix/**
 
   pull_request:
     branches:
@@ -14,29 +15,38 @@ on:
 jobs:
 
   test:
+
+    name: Tests y Calidad
+
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Descargar código
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov flake8 bandit
 
       - name: Ejecutar pruebas
         run: |
-          pytest --cov=app --cov-report=term
+          pytest --cov=app --cov-report=xml --cov-report=term
 
-      - name: Revisar calidad del código
+      - name: Publicar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: coverage.xml
+
+      - name: Analizar calidad con Flake8
         run: |
           flake8 app
 
@@ -46,19 +56,32 @@ jobs:
 
   docker:
 
+    name: Construcción Docker
+
     needs: test
 
     runs-on: ubuntu-latest
 
     steps:
 
-      - name: Descargar código
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
       - name: Construir imagen Docker
         run: |
-          docker build -t microservicio-devops .
+          docker build -t microservicio-devops:latest .
 
       - name: Ejecutar contenedor
         run: |
-          docker run -d -p 5000:5000 microservicio-devops
+          docker run -d \
+            --name microservicio \
+            -p 5000:5000 \
+            microservicio-devops:latest
+
+      - name: Verificar contenedor
+        run: |
+          docker ps
+
+      - name: Mostrar logs
+        run: |
+          docker logs microservicio
