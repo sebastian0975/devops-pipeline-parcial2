@@ -1,30 +1,56 @@
-# DevOps Pipeline - Evaluación Parcial 3
+# DevOps Pipeline - Evaluación Final Transversal
 
 ## Descripción
 
-Este proyecto corresponde a la Evaluación Parcial 3 de la asignatura de Ingeniería DevOps.
+Este proyecto corresponde a la Evaluación Final Transversal de la asignatura **Ingeniería DevOps (DOY0101)**.
 
-Consiste en la extensión del pipeline DevOps desarrollado previamente para incorporar herramientas de observabilidad mediante Prometheus y Grafana, permitiendo monitorear el comportamiento del microservicio y visualizar métricas de funcionamiento en un entorno simulado.
+El objetivo es automatizar el ciclo de vida de un microservicio desarrollado en Flask aplicando principios DevOps, integrando control de versiones, integración continua, contenedores, orquestación, monitoreo, observabilidad, métricas y controles de calidad.
 
-Además, el proyecto incluye un despliegue del microservicio utilizando Docker, Docker Compose y Kubernetes.
+El proyecto implementa un pipeline CI/CD que permite validar automáticamente el código antes de construir y desplegar la aplicación.
 
 ---
 
 # Tecnologías utilizadas
 
-* Python 3.11
-* Flask
-* Docker
-* Docker Compose
-* Kubernetes
-* Prometheus
-* Grafana
-* GitHub Actions
-* Pytest
-* pytest-cov
-* Flake8
-* Bandit
-* Dependabot
+- Python 3.11
+- Flask
+- Docker
+- Docker Compose
+- Kubernetes
+- Prometheus
+- Grafana
+- GitHub Actions
+- Pytest
+- Pytest-Cov
+- Flake8
+- Bandit
+- Dependabot
+
+---
+
+# Arquitectura del proyecto
+
+```
+Desarrollador
+      │
+      ▼
+ GitHub Repository
+      │
+      ▼
+ GitHub Actions
+      │
+      ├── Pytest
+      ├── Flake8
+      ├── Bandit
+      ▼
+ Docker Build
+      ▼
+ Docker Compose
+      │
+      ├── Microservicio Flask
+      ├── Prometheus
+      └── Grafana
+```
 
 ---
 
@@ -53,79 +79,90 @@ Además, el proyecto incluye un despliegue del microservicio utilizando Docker, 
 
 El microservicio fue desarrollado utilizando Flask.
 
-Expone las siguientes rutas:
+Actualmente expone los siguientes endpoints:
 
-## GET /
-
-Devuelve el estado del microservicio.
-
-Respuesta:
-
-```json
-{
-  "mensaje": "Microservicio DevOps funcionando",
-  "estado": "OK"
-}
-```
-
-## GET /error
-
-Genera un error controlado para registrar una métrica de errores.
-
-## GET /metrics
-
-Expone las métricas del microservicio en formato Prometheus.
-
----
-
-# Observabilidad
-
-Se implementó Prometheus para recolectar las métricas generadas por el microservicio.
-
-Las métricas son obtenidas desde:
-
-```
-/metrics
-```
-
-Grafana fue configurado como herramienta de visualización utilizando Prometheus como fuente de datos.
-
-Se creó un dashboard personalizado que muestra:
-
-* Peticiones Totales
-* Errores Totales
-* CPU del proceso
-* Memoria utilizada
-
----
-
-# Kubernetes
-
-El proyecto incluye manifiestos para desplegar el microservicio en un clúster Kubernetes.
-
-Se implementan los siguientes recursos:
-
-* Namespace
-* Deployment
-* Service (NodePort)
-
-El despliegue fue validado verificando el estado del Pod y del Deployment.
+| Método | Endpoint | Descripción |
+|---------|----------|-------------|
+| GET | / | Estado del microservicio |
+| GET | /health | Verificación de disponibilidad |
+| GET | /metrics | Métricas Prometheus |
+| GET | /error | Genera un error controlado para pruebas |
 
 ---
 
 # Pipeline CI/CD
 
-El proyecto incorpora un pipeline utilizando GitHub Actions.
+El pipeline automatiza las siguientes tareas:
 
-El flujo realiza las siguientes tareas:
+- Instalación de dependencias.
+- Ejecución de pruebas unitarias.
+- Medición de cobertura.
+- Análisis de calidad con Flake8.
+- Escaneo de seguridad con Bandit.
+- Construcción de la imagen Docker.
+- Ejecución del contenedor únicamente cuando todas las validaciones anteriores son exitosas.
 
-* Instalación de dependencias
-* Ejecución de pruebas automatizadas
-* Cobertura de código con pytest-cov
-* Análisis de calidad con Flake8
-* Escaneo de seguridad mediante Bandit
-* Construcción de la imagen Docker
-* Ejecución del contenedor
+De esta manera se evita desplegar versiones con errores de calidad o problemas de seguridad.
+
+---
+
+# Observabilidad
+
+La observabilidad del proyecto se implementa mediante Prometheus y Grafana.
+
+Prometheus obtiene las métricas directamente desde:
+
+```
+/metrics
+```
+
+Grafana utiliza Prometheus como fuente de datos y permite visualizar el comportamiento del microservicio en tiempo real.
+
+Las métricas monitoreadas incluyen:
+
+- Total de peticiones.
+- Total de errores.
+- Uso de CPU.
+- Uso de memoria.
+- Disponibilidad del servicio.
+
+---
+
+# Decisiones técnicas
+
+Las métricas permiten apoyar decisiones durante la operación del sistema.
+
+Ejemplos:
+
+- Un aumento en la cantidad de errores puede indicar un problema en una nueva versión del microservicio.
+- Un incremento sostenido del uso de CPU puede justificar aumentar los recursos asignados al contenedor.
+- Un crecimiento del consumo de memoria puede evidenciar fugas de memoria.
+- La disponibilidad del servicio permite detectar caídas del microservicio rápidamente.
+- Los resultados de Flake8 y Bandit permiten impedir despliegues que no cumplan los estándares de calidad y seguridad.
+
+---
+
+# Contenedores
+
+El proyecto utiliza Docker para contenerizar el microservicio.
+
+Docker Compose permite ejecutar automáticamente:
+
+- Microservicio Flask.
+- Prometheus.
+- Grafana.
+
+---
+
+# Kubernetes
+
+Se incluyen manifiestos para desplegar el microservicio utilizando Kubernetes.
+
+Los recursos implementados son:
+
+- Namespace
+- Deployment
+- Service
 
 ---
 
@@ -139,19 +176,19 @@ docs/evidencias
 
 Incluyen capturas de:
 
-* Dashboard de Grafana
-* Estado de Prometheus
-* Contenedores Docker
-* Recursos de Kubernetes
-* Pipeline de GitHub Actions
+- Dashboard Grafana.
+- Prometheus Targets.
+- Docker Compose.
+- Kubernetes.
+- Pipeline GitHub Actions.
 
 ---
 
-# Ejecución del proyecto
+# Ejecución
 
 ## Docker Compose
 
-```bash
+```
 docker compose up --build
 ```
 
@@ -177,7 +214,7 @@ http://localhost:3000
 
 # Ejecución de pruebas
 
-```bash
+```
 pytest --cov=app
 ```
 
@@ -185,4 +222,8 @@ pytest --cov=app
 
 # Autor
 
-Sebastián González Tapia
+**Sebastián González Tapia**
+
+Ingeniería en Informática
+
+Duoc UC
