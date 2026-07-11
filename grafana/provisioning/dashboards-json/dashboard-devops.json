@@ -64,9 +64,41 @@
       ],
       "gridPos": {
         "h": 8,
-        "w": 18,
+        "w": 9,
         "x": 0,
         "y": 4
+      }
+    },
+    {
+      "id": 5,
+      "title": "CPU del proceso",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total[1m])"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 9,
+        "y": 4
+      }
+    },
+    {
+      "id": 6,
+      "title": "Memoria utilizada",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 0,
+        "y": 12
       }
     }
   ],
@@ -84,5 +116,5 @@
   },
   "timezone": "",
   "title": "Dashboard DevOps",
-  "version": 1
+  "version": 2
 }
