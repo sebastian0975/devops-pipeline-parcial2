@@ -1,4 +1,4 @@
- from flask import Flask, jsonify, Response
+from flask import Flask, jsonify, Response
 from prometheus_client import (
     CONTENT_TYPE_LATEST,
     Counter,
@@ -57,7 +57,6 @@ def registrar_tiempo(response):
 @app.route("/")
 def home():
     REQUEST_COUNT.inc()
-
     logger.info("Solicitud recibida en '/'")
 
     return jsonify(
@@ -71,7 +70,6 @@ def home():
 @app.route("/health")
 def health():
     HEALTH_COUNT.inc()
-
     logger.info("Health Check ejecutado")
 
     return jsonify(
@@ -84,7 +82,6 @@ def health():
 @app.route("/error")
 def error():
     ERROR_COUNT.inc()
-
     logger.error("Error simulado generado")
 
     return jsonify(

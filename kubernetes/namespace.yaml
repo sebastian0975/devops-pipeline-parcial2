@@ -3,3 +3,7 @@ kind: Namespace
 
 metadata:
   name: devops
+
+  labels:
+    proyecto: devops-pipeline
+    ambiente: desarrollo

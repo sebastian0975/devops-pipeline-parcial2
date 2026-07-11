@@ -1,0 +1,88 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "id": 1,
+      "title": "Peticiones Totales",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "peticiones_totales_total"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": 2,
+      "title": "Errores Totales",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "errores_totales_total"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      }
+    },
+    {
+      "id": 3,
+      "title": "Health Checks",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "health_checks_totales_total"
+        }
+      ],
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      }
+    },
+    {
+      "id": 4,
+      "title": "Tiempo de Respuesta",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "rate(tiempo_respuesta_segundos_sum[1m]) / rate(tiempo_respuesta_segundos_count[1m])"
+        }
+      ],
+      "gridPos": {
+        "h": 8,
+        "w": 18,
+        "x": 0,
+        "y": 4
+      }
+    }
+  ],
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [
+    "devops"
+  ],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timezone": "",
+  "title": "Dashboard DevOps",
+  "version": 1
+}
