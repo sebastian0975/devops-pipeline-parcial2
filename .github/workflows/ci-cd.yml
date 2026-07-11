@@ -24,7 +24,7 @@ jobs:
     steps:
 
       - name: Descargar repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
 
       - name: Configurar Python
@@ -75,7 +75,7 @@ jobs:
     steps:
 
       - name: Descargar repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
 
       - name: Construir imagen Docker
@@ -104,7 +104,7 @@ jobs:
     steps:
 
       - name: Descargar repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
 
       - name: Instalar kubectl
