@@ -12,6 +12,7 @@ on:
     branches:
       - main
 
+
 jobs:
 
   test:
@@ -25,20 +26,24 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
+
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: "pip"
 
+
       - name: Instalar dependencias
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+
       - name: Ejecutar pruebas
         run: |
           pytest --cov=app --cov-report=xml --cov-report=term
+
 
       - name: Publicar reporte de cobertura
         uses: actions/upload-artifact@v4
@@ -46,13 +51,17 @@ jobs:
           name: cobertura
           path: coverage.xml
 
+
       - name: Analizar calidad con Flake8
         run: |
           flake8 app
 
+
       - name: Escaneo de seguridad con Bandit
         run: |
           bandit -r app
+
+
 
   docker:
 
@@ -62,14 +71,25 @@ jobs:
 
     runs-on: ubuntu-latest
 
+
     steps:
 
       - name: Descargar repositorio
         uses: actions/checkout@v4
 
+
       - name: Construir imagen Docker
         run: |
           docker build -t microservicio-devops:latest .
+
+
+      - name: Escaneo de imagen Docker con Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: microservicio-devops:latest
+          severity: CRITICAL,HIGH
+          exit-code: 1
+
 
       - name: Ejecutar contenedor
         run: |
@@ -78,9 +98,11 @@ jobs:
             -p 5000:5000 \
             microservicio-devops:latest
 
+
       - name: Verificar contenedor
         run: |
           docker ps
+
 
       - name: Mostrar logs
         run: |
