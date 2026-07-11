@@ -4,27 +4,27 @@
 
 Este proyecto corresponde a la Evaluación Final Transversal de la asignatura **Ingeniería DevOps (DOY0101)**.
 
-El objetivo es automatizar el ciclo de vida de un microservicio desarrollado en Flask aplicando principios DevOps, integrando control de versiones, integración continua, contenedores, orquestación, monitoreo, observabilidad, métricas y controles de calidad.
+El objetivo es implementar un flujo DevOps para un microservicio desarrollado con Flask, integrando control de versiones, integración continua, pruebas automatizadas, contenedores, despliegue mediante Kubernetes y herramientas de observabilidad.
 
-El proyecto implementa un pipeline CI/CD que permite validar automáticamente el código antes de construir y desplegar la aplicación.
+El proyecto cuenta con un pipeline CI/CD utilizando GitHub Actions, encargado de validar la calidad del código, ejecutar pruebas, realizar análisis de seguridad y construir la imagen Docker del microservicio.
 
 ---
 
 # Tecnologías utilizadas
 
-- Python 3.11
-- Flask
-- Docker
-- Docker Compose
-- Kubernetes
-- Prometheus
-- Grafana
-- GitHub Actions
-- Pytest
-- Pytest-Cov
-- Flake8
-- Bandit
-- Dependabot
+* Python 3.11
+* Flask
+* Docker
+* Docker Compose
+* Kubernetes
+* Prometheus
+* Grafana
+* GitHub Actions
+* Pytest
+* Pytest-Cov
+* Flake8
+* Bandit
+* Dependabot
 
 ---
 
@@ -44,12 +44,15 @@ Desarrollador
       ├── Bandit
       ▼
  Docker Build
-      ▼
- Docker Compose
       │
-      ├── Microservicio Flask
-      ├── Prometheus
-      └── Grafana
+      ├── Docker Compose
+      │       ├── Flask
+      │       ├── Prometheus
+      │       └── Grafana
+      │
+      └── Kubernetes
+              ├── Deployment
+              └── Service
 ```
 
 ---
@@ -75,94 +78,103 @@ Desarrollador
 
 ---
 
-# Funcionalidad del microservicio
+# Microservicio Flask
 
-El microservicio fue desarrollado utilizando Flask.
+El microservicio fue desarrollado utilizando Flask y expone los siguientes endpoints:
 
-Actualmente expone los siguientes endpoints:
-
-| Método | Endpoint | Descripción |
-|---------|----------|-------------|
-| GET | / | Estado del microservicio |
-| GET | /health | Verificación de disponibilidad |
-| GET | /metrics | Métricas Prometheus |
-| GET | /error | Genera un error controlado para pruebas |
+| Método | Endpoint   | Descripción                                 |
+| ------ | ---------- | ------------------------------------------- |
+| GET    | `/`        | Estado general del microservicio            |
+| GET    | `/health`  | Verificación de disponibilidad              |
+| GET    | `/metrics` | Exposición de métricas para Prometheus      |
+| GET    | `/error`   | Generación controlada de error para pruebas |
 
 ---
 
 # Pipeline CI/CD
 
-El pipeline automatiza las siguientes tareas:
+El pipeline implementado mediante GitHub Actions realiza:
 
-- Instalación de dependencias.
-- Ejecución de pruebas unitarias.
-- Medición de cobertura.
-- Análisis de calidad con Flake8.
-- Escaneo de seguridad con Bandit.
-- Construcción de la imagen Docker.
-- Ejecución del contenedor únicamente cuando todas las validaciones anteriores son exitosas.
+* Instalación de dependencias.
+* Ejecución de pruebas automatizadas con Pytest.
+* Generación de reporte de cobertura.
+* Validación de calidad mediante Flake8.
+* Análisis de seguridad mediante Bandit.
+* Construcción de imagen Docker.
+* Ejecución de validación del contenedor.
 
-De esta manera se evita desplegar versiones con errores de calidad o problemas de seguridad.
+Estas etapas permiten detectar errores antes de continuar con las siguientes fases del flujo.
 
 ---
 
 # Observabilidad
 
-La observabilidad del proyecto se implementa mediante Prometheus y Grafana.
+La observabilidad se implementa utilizando Prometheus y Grafana.
 
-Prometheus obtiene las métricas directamente desde:
+Prometheus obtiene las métricas desde el endpoint:
 
 ```
 /metrics
 ```
 
-Grafana utiliza Prometheus como fuente de datos y permite visualizar el comportamiento del microservicio en tiempo real.
+Grafana utiliza Prometheus como fuente de datos para visualizar el estado del microservicio.
 
-Las métricas monitoreadas incluyen:
+Las métricas visualizadas incluyen:
 
-- Total de peticiones.
-- Total de errores.
-- Uso de CPU.
-- Uso de memoria.
-- Disponibilidad del servicio.
+* Cantidad total de peticiones.
+* Cantidad total de errores.
+* Cantidad de health checks.
+* Tiempo promedio de respuesta.
+* Métricas de recursos del proceso.
 
 ---
 
-# Decisiones técnicas
+# Métricas implementadas
 
-Las métricas permiten apoyar decisiones durante la operación del sistema.
+El microservicio utiliza `prometheus_client` para generar métricas:
 
-Ejemplos:
+* `peticiones_totales`
+* `errores_totales`
+* `health_checks_totales`
+* `tiempo_respuesta_segundos`
 
-- Un aumento en la cantidad de errores puede indicar un problema en una nueva versión del microservicio.
-- Un incremento sostenido del uso de CPU puede justificar aumentar los recursos asignados al contenedor.
-- Un crecimiento del consumo de memoria puede evidenciar fugas de memoria.
-- La disponibilidad del servicio permite detectar caídas del microservicio rápidamente.
-- Los resultados de Flake8 y Bandit permiten impedir despliegues que no cumplan los estándares de calidad y seguridad.
+Estas métricas permiten observar el comportamiento del servicio durante su ejecución.
 
 ---
 
 # Contenedores
 
-El proyecto utiliza Docker para contenerizar el microservicio.
+El proyecto utiliza Docker para contenerizar el microservicio Flask.
 
-Docker Compose permite ejecutar automáticamente:
+Docker Compose permite ejecutar los servicios:
 
-- Microservicio Flask.
-- Prometheus.
-- Grafana.
+* Microservicio Flask.
+* Prometheus.
+* Grafana.
 
 ---
 
 # Kubernetes
 
-Se incluyen manifiestos para desplegar el microservicio utilizando Kubernetes.
+El despliegue en Kubernetes utiliza los siguientes recursos:
 
-Los recursos implementados son:
+* Namespace.
+* Deployment.
+* Service tipo NodePort.
 
-- Namespace
-- Deployment
-- Service
+El microservicio se ejecuta dentro del namespace:
+
+```
+devops
+```
+
+Comandos utilizados para validar el despliegue:
+
+```
+kubectl get pods -n devops
+
+kubectl get svc -n devops
+```
 
 ---
 
@@ -176,21 +188,25 @@ docs/evidencias
 
 Incluyen capturas de:
 
-- Dashboard Grafana.
-- Prometheus Targets.
-- Docker Compose.
-- Kubernetes.
-- Pipeline GitHub Actions.
+* Ejecución del pipeline GitHub Actions.
+* Dashboard Grafana.
+* Targets de Prometheus.
+* Estado de Kubernetes.
+* Ejecución del microservicio.
 
 ---
 
-# Ejecución
+# Ejecución local
 
 ## Docker Compose
+
+Ejecutar:
 
 ```
 docker compose up --build
 ```
+
+Servicios disponibles:
 
 Microservicio:
 
@@ -212,10 +228,24 @@ http://localhost:3000
 
 ---
 
-# Ejecución de pruebas
+# Pruebas
+
+Ejecutar:
 
 ```
 pytest --cov=app
+```
+
+Validación de calidad:
+
+```
+flake8 app
+```
+
+Análisis de seguridad:
+
+```
+bandit -r app
 ```
 
 ---
