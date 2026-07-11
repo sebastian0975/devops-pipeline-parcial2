@@ -8,6 +8,7 @@ from prometheus_client import (
 import logging
 import time
 
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -16,6 +17,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+
 
 # ==========================
 # Métricas Prometheus
@@ -74,7 +76,7 @@ def health():
 
     return jsonify(
         {
-            "status": "UP"
+            "status": "UP",
         }
     )
 
@@ -86,7 +88,7 @@ def error():
 
     return jsonify(
         {
-            "mensaje": "Error simulado"
+            "mensaje": "Error simulado",
         }
     ), 500
 
@@ -103,6 +105,6 @@ if __name__ == "__main__":
     logger.info("Microservicio iniciado correctamente")
 
     app.run(
-        host="0.0.0.0",
+        host="0.0.0.0",  # nosec B104
         port=5000,
     )
