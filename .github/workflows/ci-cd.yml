@@ -108,7 +108,7 @@ jobs:
 
 
       - name: Instalar kubectl
-        uses: azure/setup-kubectl@v4
+        uses: azure/setup-kubectl@v5
 
 
       - name: Aplicar Namespace
